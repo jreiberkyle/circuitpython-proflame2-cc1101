@@ -1,6 +1,6 @@
 # circuitpython-proflame2-cc1101
 
-Control a Proflame 2 fireplace using a CC1101 transciever and the CircuitPython language
+Control a Proflame 2 fireplace using a CC1101 transciever and CircuitPython
 
 ## Introduction
 
