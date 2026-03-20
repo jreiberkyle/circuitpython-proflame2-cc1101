@@ -1,19 +1,49 @@
 # circuitpython-proflame2-cc1101
 
-Control a Proflame 2 fireplace using a CC1101 transciever and the CircuitPython language.
+Control a Proflame 2 fireplace using a CC1101 transciever and the CircuitPython language
 
 ## Introduction
 
 This library controls Proflame 2 fireplace using a CC1101 transciever and the CircuitPython language. What makes this library unique compared to prior art is that it uses the CC1101 in FIFO mode (more reliable but a bit trickier to configure than asynchronous), it implements the Proflame 2 protocol and it works with CircuitPython. Also, I put some work into explaining the registers for those who are interested in CC1101 dev (cool!) or who are having troubles where the transmission isn't working (more likely, no worries - check out the Troubleshooting section below).
 
-To control the Proflame 2, you are going to need to capture your Proflame 2 transmitter's signal to get the transmitter's serial code. I used rtl-sdr blog v4 kit for this. It was $50 when I bought it March 2026. It is also very helpful for troubleshooting. Others suggest you can also generate your own serial code and pair it with your fireplace receiver. For more information on that approach, see [proflame2-esp](https://github.com/j2deen/proflame2-esp).
+To control the Proflame 2, you are going to need to capture your Proflame 2 transmitter's signal. I used rtl-sdr blog v4 kit for this. It was $50 when I bought it March 2026. Capturing the transmitter's signal is necessary for two reasons. First, you need to get the transmitter's unique serial code (alternatively, see [proflame2-esp](https://github.com/j2deen/proflame2-esp) for instructions on generating/pairing a new serial code). Second, you need to capture the control words associated with the fireplace desired state.
 
-This library supports only TX, not RX. The Proflame receiver does repeat back a successfully received signal, so RX could be helpful in confirming the signal was received. Contributions are welcome!
+### Usage
+
+```python
+    import proflame2_cc1101
+
+    off_packet = proflame2_cc1101.get_packet(serial=PROFLAME_TX_SERIAL, cmd1=0x00, cmd2=0x82, err1=0x14, err2=0xc5)
+
+    spi, cs = proflame2_cc1101.configure(sck_pin=C1101_SCK, mosi_pin=C1101_MOSI, miso_pin=C1101_MISO, csn_pin=C1101_CSN)
+
+    proflame2_cc1101.send(off_packet, spi, cs)
+```
+
+### Limitations
+
+This library supports only TX, not RX. The Proflame receiver does repeat back a successfully received signal, so RX could be helpful in confirming the signal was received.
+
+Also, this library requires the user to know the desired command words. There are other libraries that can be used to generate the control words (see Prior Art). However, there seems to be some confusion on how to generate the Err1 and Err2 words (see RTL_433 LINK HERE). Generating command words could be useful for supporting many different fireplace setting configurations with ease.
+
+### Status
+
+This project is in active development and issues / prs are welcome.
 
 
-## Configuration
+## Setup
 
-### Proflame 2 Serial Code
+### Quick Start
+
+Edit `code.py` and set the global variables at the top. Copy `proflame_cc1101.py` and `code.py` to the microcontroller. Upon reboot, the fireplace should turn on!
+
+
+### Install
+
+Copy `proflame2_cc1101.py` to the `/lib` folder in the microcontroller.
+
+
+### Proflame 2 Serial Code and Command Words
 
 The Proflame 2 Transmitter serial code can be obtained using a sdr receiver and [rtl_433](https://github.com/merbanan/rtl_433).
 
@@ -23,7 +53,7 @@ Start rtl_433 in the mode for recognizing the Proflame 2 transmission:
 
 Then press any button on the transmitter.
 
-The serial code is obtained from the `Id` field in the rtl_433 printout. Given an (made up, possibly invalid) Id value of `aaaaaa`, the serial code is `0xaaaaaa` in hex.
+The serial code is obtained from the `Id` field in the rtl_433 printout and the command words are indicated in their labels. They can be converted to hex by prepending `0x` so a value of `aaaaaa` becomes `0xaaaaaa`.
 
 ### Wiring
 
@@ -35,7 +65,13 @@ This is the recommended wiring. The CSN pin can be moved to any IO pin on the Fe
 | **SCK/MOSI/MISO** | **SCK/MOSI/MISO** | SPI Configuration Bus |
 | **CSN** | **A4** (Default) | SPI Chip Select |
 
-## Proflame 2 Transmitter
+### Antenna
+
+The antenna connected to the CC1101 needs to be the proper length to support transmitting at 315MHz. A great option is a wire cut to 9.4in. I didn't have room for that so I cut mine to 7in and it is working just fine.
+
+## Background
+
+### Proflame 2 Transmitter
 
 The specific Proflame 2 Transmitter this project was tested with is T99058404300. The test report, available from the [FCC T99058404300 exhibits page](https://apps.fcc.gov/oetcf/eas/reports/ViewExhibitReport.cfm?mode=Exhibits&RequestTimeout=500&calledFromFrame=N&application_id=Irrbj6TtSTeYQAa0r61skA%3D%3D&fcc_id=T99058404300), shows the center frequency is 314.9575. The Proflame 2 Transmitter protocol was first described in https://github.com/johnellinwood/smartfire (for FCC T99058402300, different ID than the one used for testing this library but same behavior) and then support for the Proflame Transmitter was added to rtl_433 ([rtl_433 issue 1905](https://github.com/merbanan/rtl_433/issues/1905)) in 2021. 
 
@@ -65,7 +101,7 @@ Look at the [rtl_433 proflame.c file](https://github.com/merbanan/rtl_433/blob/m
 > - Error Detection 1
 > - Error Detection 2
 
-## CC1101 Configuration
+### CC1101 Configuration
 
 The Proflame protocol does not match any of the built-in protocols supported by CC1101 by default. Therefore, it is necessary to disable a lot of CC1101 'helpers' using the registers. Also, the CC1101 simply needs to be configured to use the right carrier frequencies, baud, etc. An essential reference for this is the [CC1101 technical datasheet](https://www.ti.com/lit/ds/symlink/cc1101.pdf?ts=1773350741330&ref_url=https%253A%252F%252Fwww.ti.com%252Fproduct%252FCC1101). The header settings and explanations are also available in the source code.
 
