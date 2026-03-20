@@ -2,6 +2,8 @@
 
 Control a Proflame 2 fireplace using a CC1101 transciever and CircuitPython
 
+<img src=".github/images/CC1101_feather_proflame2.jpeg" width="400"/>
+
 ## Introduction
 
 This library controls Proflame 2 fireplace using a CC1101 transciever and the CircuitPython language. What makes this library unique compared to prior art is that it uses the CC1101 in FIFO mode (more reliable but a bit trickier to configure than asynchronous), it implements the Proflame 2 protocol and it works with CircuitPython. Also, I put some work into explaining the registers for those who are interested in CC1101 dev (cool!) or who are having troubles where the transmission isn't working (more likely, no worries - check out the Troubleshooting section below).
