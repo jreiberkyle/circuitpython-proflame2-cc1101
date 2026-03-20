@@ -10,14 +10,26 @@ To control the Proflame 2, you are going to need to capture your Proflame 2 tran
 
 ### Usage
 
+NOTE: `PROFLAME_TX_SERIAL` must be set and the boards must be properly wired. See Setup section.
+
+Turn fireplace on to flame level 2:
 ```python
-    import proflame2_cc1101
+import proflame2_cc1101
 
-    off_packet = proflame2_cc1101.get_packet(serial=PROFLAME_TX_SERIAL, cmd1=0x00, cmd2=0x82, err1=0x14, err2=0xc5)
+on_packet = proflame2_cc1101.get_packet(serial=PROFLAME_TX_SERIAL, cmd1=0x01, cmd2=0x82, err1=0x35, err2=0xc5)
 
-    spi, cs = proflame2_cc1101.configure(sck_pin=C1101_SCK, mosi_pin=C1101_MOSI, miso_pin=C1101_MISO, csn_pin=C1101_CSN)
+spi, cs = proflame2_cc1101.configure(sck_pin=board.SCK, mosi_pin=board.MOSI, miso_pin=board.MISO, csn_pin=board.A5)
+proflame2_cc1101.send(off_packet, spi, cs)
+```
 
-    proflame2_cc1101.send(off_packet, spi, cs)
+Turn fireplace off:
+```python
+import proflame2_cc1101
+
+off_packet = proflame2_cc1101.get_packet(serial=PROFLAME_TX_SERIAL, cmd1=0x00, cmd2=0x82, err1=0x14, err2=0xc5)
+
+spi, cs = proflame2_cc1101.configure(sck_pin=board.SCK, mosi_pin=board.MOSI, miso_pin=board.MISO, csn_pin=board.A5)
+proflame2_cc1101.send(off_packet, spi, cs)
 ```
 
 ### Limitations
@@ -33,15 +45,9 @@ This project is in active development and issues / prs are welcome.
 
 ## Setup
 
-### Quick Start
-
-Edit `code.py` and set the global variables at the top. Copy `proflame_cc1101.py` and `code.py` to the microcontroller. Upon reboot, the fireplace should turn on!
-
-
 ### Install
 
 Copy `proflame2_cc1101.py` to the `/lib` folder in the microcontroller.
-
 
 ### Proflame 2 Serial Code and Command Words
 
@@ -150,7 +156,7 @@ If `111` shows up more or less than 7 times, this likely means the CC1101 is gar
 ## Prior Art / Acknowledgements 
 
 The libraries that I found helpful in this endeavor: 
-* [proflame2-esp](https://github.com/j2deen/proflame2-esp) provides the CC1101 Asynchronous mode registries for implementing the Proflame 2 protocol
-* [CPY-CC1101](https://github.com/unixb0y/CPY-CC1101) demonstrates controlling a CC1101 in Asynchronous mode with CircuitPython
-* [SmartFire](https://github.com/johnellinwood/smartfire) provides the original Proflame 2 protocol research
-* [rtl_433](https://github.com/merbanan/rtl_433) implements support for the Proflame protocol 
+* [proflame2-esp](https://github.com/j2deen/proflame2-esp) -provides the CC1101 Asynchronous mode registries for implementing the Proflame 2 protocol
+* [CPY-CC1101](https://github.com/unixb0y/CPY-CC1101) -demonstrates controlling a CC1101 in Asynchronous mode with CircuitPython
+* [SmartFire](https://github.com/johnellinwood/smartfire) -provides the original Proflame 2 protocol research
+* [rtl_433](https://github.com/merbanan/rtl_433) -implements support for the Proflame protocol 
