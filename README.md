@@ -38,7 +38,7 @@ proflame2_cc1101.send(off_packet, spi, cs)
 
 This library supports only TX, not RX. The Proflame receiver does repeat back a successfully received signal, so RX could be helpful in confirming the signal was received.
 
-Also, this library requires the user to know the desired command words. There are other libraries that can be used to generate the control words (see Prior Art). However, there seems to be some confusion on how to generate the Err1 and Err2 words (see RTL_433 LINK HERE). Generating command words could be useful for supporting many different fireplace setting configurations with ease.
+Also, this library requires the user to know the desired command words. There are other libraries that can be used to generate the control words (see Prior Art). However, there seems to be some confusion on how to generate the Err1 and Err2 words (see [rtl_433 Proflame thread](https://github.com/merbanan/rtl_433/issues/1905)). Generating command words could be useful for supporting many different fireplace setting configurations with ease.
 
 ### Status
 
