@@ -1,12 +1,12 @@
 # circuitpython-proflame2-cc1101
 
-Control a Proflame 2 fireplace using a CC1101 transciever and CircuitPython
+Control a Proflame 2 fireplace using a CC1101 transceiver and CircuitPython
 
 <img src=".github/images/CC1101_feather_proflame2.jpeg" width="400"/>
 
 ## Introduction
 
-This library controls Proflame 2 fireplace using a CC1101 transciever and the CircuitPython language. What makes this library unique compared to prior art is that it uses the CC1101 in FIFO mode (more reliable but a bit trickier to configure than asynchronous), it implements the Proflame 2 protocol and it works with CircuitPython. Also, I put some work into explaining the registers for those who are interested in CC1101 dev (cool!) or who are having troubles where the transmission isn't working (more likely, no worries - check out the Troubleshooting section below).
+This library controls Proflame 2 fireplace using a CC1101 transceiver and the CircuitPython language. What makes this library unique compared to prior art is that it uses the CC1101 in FIFO mode (more reliable but a bit trickier to configure than asynchronous), it implements the Proflame 2 protocol and it works with CircuitPython. Also, I put some work into explaining the registers for those who are interested in CC1101 dev (cool!) or who are having troubles where the transmission isn't working (more likely, no worries - check out the Troubleshooting section below).
 
 To control the Proflame 2, you are going to need to capture your Proflame 2 transmitter's signal. I used rtl-sdr blog v4 kit for this. It was $50 when I bought it March 2026. Capturing the transmitter's signal is necessary for two reasons. First, you need to get the transmitter's unique serial code (alternatively, see [proflame2-esp](https://github.com/j2deen/proflame2-esp) for instructions on generating/pairing a new serial code). Second, you need to capture the control words associated with the fireplace desired state.
 
